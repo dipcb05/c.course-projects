@@ -4,7 +4,7 @@
 #include<windows.h>
 #include<time.h>
 
-int j;
+int j,k;
 FILE *fp;
 struct book
 {
@@ -14,6 +14,8 @@ struct book
     int quantity;
     float Price;
 };
+struct book book;
+
 void password();
 void mainmenu();
 void addbooks();
@@ -23,6 +25,7 @@ void issuebooks();
 void viewbooks();
 void ebrecords();
 void closeapp();
+
 void delay(unsigned int mseconds)
 {
     clock_t goal = mseconds + clock();
@@ -177,9 +180,43 @@ void addbooks()
    {
        mainmenu();
    }
-    if(d<=5)
-    {fp = fopen("addbooks.txt","a+");
-    fclose(fp);}
+
+    system("cls");
+    gotoxy(10,8);
+    printf("give info");
+    gotoxy(10,10);
+    printf("Book ID: ");
+    scanf("%d",&k);
+    gotoxy(10,12);
+    printf("Book Name: ");
+    scanf("%s", &book.name);
+    gotoxy(10,14);
+    printf("Author: ");
+    scanf("%s", &book.Author);
+    gotoxy(10,16);
+    printf("Quantity: ");
+    scanf("%d", &book.quantity);
+    gotoxy(10,18);
+    printf("Price: ");
+    scanf("%f", &book.Price);
+   fp=fopen("addbooks.txt","ab+");
+   fwrite(&book,sizeof(book),1,fp);
+    fclose(fp);
+    gotoxy(10,20);
+    printf("Saved");
+    gotoxy(10,22);
+    printf("press enter to save more\n");
+    if(getch()==13)
+        {
+        system("cls");
+        addbooks();
+        }
+
+    else
+        {
+           system("cls");
+           mainmenu();
+        }
 
 }
 void searchbooks()
