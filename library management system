@@ -1,0 +1,240 @@
+#include<stdio.h>
+#include<string.h>
+#include<conio.h>
+#include<windows.h>
+#include<time.h>
+
+int j;
+FILE *fp;
+struct book
+{
+    int id;
+    char name[20];
+    char Author[20];
+    int quantity;
+    float Price;
+};
+void password();
+void mainmenu();
+void addbooks();
+void searchbooks();
+void deletebooks();
+void issuebooks();
+void viewbooks();
+void ebrecords();
+void closeapp();
+void delay(unsigned int mseconds)
+{
+    clock_t goal = mseconds + clock();
+    while (goal > clock());
+}
+COORD coord={0,0};
+void gotoxy(int x, int y)
+{
+    coord.X=x;
+    coord.Y=y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+void password()
+{
+    char pw[25]="welcome to this system";
+    char a[10];
+    char b[10];
+    system("cls");
+    gotoxy(10,5);
+    for(j=0;j<15;j++)
+    {
+    delay(50);
+    printf("*");
+    }
+    printf(" ");
+    for(j=0;j<22;j++)
+    {
+    delay(50);
+    printf("%c",pw[j]);
+    }
+    printf(" ");
+    for(j=0;j<15;j++)
+    {
+    delay(50);
+    printf("*");
+    }
+    gotoxy(10, 8);
+    printf("Make Your Password: ");
+    gets(a);
+    delay(50);
+    gotoxy(10, 10);
+    printf("Give Your Password: ");
+    gets(b);
+    if(strcmp(a,b)==0)
+    {
+        gotoxy(10,13);
+        printf("\nPassword Matched!");
+        gotoxy(10,15);
+        printf("\nAny Key To Continue........");
+        getchar();
+        mainmenu();
+    }
+    else
+    {
+       gotoxy(10,13);
+       printf("\aSorry! Password Do Not Matched....\n");
+       gotoxy(10,15);
+       printf("Please Try Again...\n");
+       getchar();
+    }
+}
+void mainmenu()
+{
+    int c;
+    system("cls");
+    gotoxy(10,2);
+    for(j=0;j<10;j++)
+    {
+        printf("*");
+    }
+    printf("happy world of books");
+    for(j=0;j<10;j++)
+    {
+        printf("*");
+    }
+    printf("\n");
+    gotoxy(15,4);
+    printf("1. Add books");
+    gotoxy(15,6);
+    printf("2. search books");
+    gotoxy(15,8);
+    printf("3. delete books");
+    gotoxy(15,10);
+    printf("4. issue books");
+    gotoxy(15,12);
+    printf("5. view book list");
+    gotoxy(15,14);
+    printf("6. edit book records");
+    gotoxy(15,16);
+    printf("7. close application");
+    gotoxy(15,19);
+    printf("Give Your Choice: ");
+    scanf("%d", &c);
+
+   switch(c)
+  {
+case 1: addbooks();
+          break;
+
+case 2: searchbooks();
+          break;
+
+case 3: deletebooks();
+          break;
+
+case 4: issuebooks();
+          break;
+
+case 5: viewbooks();
+          break;
+
+case 6: ebrecords();
+          break;
+
+case 7: closeapp();
+          break;
+
+default : {printf("\aA Wrong Try. Try again.....");}
+
+  }
+}
+void addbooks()
+{
+   int d;
+   system("cls");
+   gotoxy(10,2);
+   delay(60);
+   printf("******     Here Is Your Option     ******\n");
+   gotoxy(10,5);
+   delay(60);
+   printf("1. Computer Engineering");
+   gotoxy(10,7);
+   delay(60);
+   printf("2. Electrical Engineering");
+   gotoxy(10,9);
+   delay(60);
+   printf("3. BBA");
+   gotoxy(10,11);
+   delay(60);
+   printf("4. BBA in AIS");
+   gotoxy(10,13);
+   delay(60);
+   printf("5. Economics");
+   gotoxy(10,15);
+   delay(60);
+   printf("7. back to main menu\n");
+   gotoxy(10,18);
+   delay(60);
+   printf("give your choice: ");
+   scanf("%d", &d);
+   if(d==7)
+   {
+       mainmenu();
+   }
+    if(d<=5)
+    {fp = fopen("addbooks.txt","a+");
+    fclose(fp);}
+
+}
+void searchbooks()
+{
+   int e;
+   system("cls");
+   gotoxy(10,2);
+   delay(60);
+   printf("*****  searching option here  *****");
+   gotoxy(10,5);
+   delay(60);
+   printf("1. Search By Name");
+   gotoxy(10,7);
+   delay(60);
+   printf("2. Search By ID");
+   gotoxy(10,9);
+   delay(60);
+   printf("3. Return Main Menu");
+   gotoxy(10,11);
+   delay(60);
+   printf("Give Your Choice: ");
+   scanf("%e", &e);
+   if(e==3)
+   {
+       mainmenu();
+   }
+
+}
+void deletebooks()
+{
+
+}
+void issuebooks()
+{
+
+}
+void viewbooks()
+{
+
+}
+void ebrecords()
+{
+
+}
+void closeapp()
+{
+      system("cls");
+      printf("Thanks for using this app.\n");
+      printf("press any key to close");
+      getch();
+}
+
+int main()
+{
+    password();
+
+    return 0;
+}
