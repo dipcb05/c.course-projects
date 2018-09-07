@@ -40,7 +40,7 @@ void gotoxy(int x, int y)
 }
 void password()
 {
-    char pw[25]="welcome to this system";
+    char pw[25]="Welcome to this system";
     char a[10];
     char b[10];
     system("cls");
@@ -84,7 +84,8 @@ void password()
        printf("\aSorry! Password Do Not Matched....\n");
        gotoxy(10,15);
        printf("Please Try Again...\n");
-       getchar();
+       if(getchar())
+       password();
     }
 }
 void mainmenu()
@@ -205,7 +206,7 @@ void addbooks()
     gotoxy(10,20);
     printf("Saved");
     gotoxy(10,22);
-    printf("press enter to save more\n");
+    printf("press enter to save more\n or press any key to back in main menu");
     if(getch()==13)
         {
         system("cls");
@@ -221,29 +222,42 @@ void addbooks()
 }
 void searchbooks()
 {
-   int e;
+   char e[50];
+   char sb[50];
    system("cls");
    gotoxy(10,2);
    delay(60);
    printf("*****  searching option here  *****");
-   gotoxy(10,5);
+   gotoxy(18,5);
    delay(60);
-   printf("1. Search By Name");
-   gotoxy(10,7);
-   delay(60);
-   printf("2. Search By ID");
+   printf("Search System By ID");
    gotoxy(10,9);
    delay(60);
-   printf("3. Return Main Menu");
-   gotoxy(10,11);
-   delay(60);
-   printf("Give Your Choice: ");
-   scanf("%e", &e);
-   if(e==3)
+   printf("Press Enter to Return Main Menu\n\n\tOr Press Any Other Key To Continue. . . . .");
+   if(getch()==13)
+    mainmenu();
+   else system("cls");
+   gotoxy(10,5);
+   printf("Give your desired book ID: ");
+   scanf("%s", &e);
+   gotoxy(10,8);
+   printf("Loading");
+   for(j=0;j<=20;j++)
    {
-       mainmenu();
+    delay(60);
+    printf(". ");
    }
-
+   system("cls");
+   fp=fopen("addbooks.txt","rb");
+    fscanf(fp,"%s",sb);
+    if(strcmp(sb,e)==0)
+        {
+        printf("the book is avialable");
+        delay(2000);
+        printf("book name: %s", book.name);
+        printf("author: %s", book.Author);
+        }
+   else printf("no record");
 }
 void deletebooks()
 {
@@ -264,8 +278,18 @@ void ebrecords()
 void closeapp()
 {
       system("cls");
-      printf("Thanks for using this app.\n");
-      printf("press any key to close");
+      gotoxy(15,8);
+      printf("Thanks For Using This Application.");
+      gotoxy(15,15);
+      printf("Loading");
+      for(j=0;j<=20;j++)
+     {
+        delay(60);
+        printf(". ");
+      }
+      system("cls");
+      gotoxy(15,10);
+      printf("Press Any Key To Close");
       getch();
 }
 
@@ -275,3 +299,4 @@ int main()
 
     return 0;
 }
+
