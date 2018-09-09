@@ -4,17 +4,19 @@
 #include<windows.h>
 #include<time.h>
 
-int j,k;
+int j,k,d;
 FILE *fp;
-struct book
+char categories[][20]={"cse", "eee", "bba","bbainais", "eco"};
+struct books
 {
     int id;
     char name[20];
     char Author[20];
     int quantity;
     float Price;
+    char *cat;
 };
-struct book book;
+struct books book;
 
 void password();
 void mainmenu();
@@ -25,7 +27,14 @@ void issuebooks();
 void viewbooks();
 void ebrecords();
 void closeapp();
-
+int getdata();
+int checkid();
+int intcmp(int a, int b)
+{
+    if(a>b)
+    return 1;
+else return 0;
+}
 void delay(unsigned int mseconds)
 {
     clock_t goal = mseconds + clock();
@@ -144,17 +153,20 @@ case 6: ebrecords();
 case 7: closeapp();
           break;
 
-default : {printf("\aA Wrong Try. Try again.....");}
+default : {
+            printf("\aA Wrong Try. Try again.....");
+            getch();
+            mainmenu();
+          }
 
   }
 }
 void addbooks()
 {
-   int d;
    system("cls");
    gotoxy(10,2);
    delay(60);
-   printf("******     Here Is Your Option     ******\n");
+   printf("******     Select Categories     ******\n");
    gotoxy(10,5);
    delay(60);
    printf("1. Computer Engineering");
@@ -172,34 +184,18 @@ void addbooks()
    printf("5. Economics");
    gotoxy(10,15);
    delay(60);
-   printf("7. back to main menu\n");
+   printf("6. back to main menu\n");
    gotoxy(10,18);
    delay(60);
    printf("give your choice: ");
    scanf("%d", &d);
-   if(d==7)
+   if(d==6)
    {
        mainmenu();
    }
-
-    system("cls");
-    gotoxy(10,8);
-    printf("give info");
-    gotoxy(10,10);
-    printf("Book ID: ");
-    scanf("%d",&k);
-    gotoxy(10,12);
-    printf("Book Name: ");
-    scanf("%s", &book.name);
-    gotoxy(10,14);
-    printf("Author: ");
-    scanf("%s", &book.Author);
-    gotoxy(10,16);
-    printf("Quantity: ");
-    scanf("%d", &book.quantity);
-    gotoxy(10,18);
-    printf("Price: ");
-    scanf("%f", &book.Price);
+   else if (getdata()==1)
+   {
+   book.cat=categories[d-1];
    fp=fopen("addbooks.txt","ab+");
    fwrite(&book,sizeof(book),1,fp);
     fclose(fp);
@@ -208,17 +204,10 @@ void addbooks()
     gotoxy(10,22);
     printf("press enter to save more\n or press any key to back in main menu");
     if(getch()==13)
-        {
-        system("cls");
-        addbooks();
-        }
-
+    addbooks();
     else
-        {
-           system("cls");
-           mainmenu();
-        }
-
+    mainmenu();
+    }
 }
 void searchbooks()
 {
@@ -289,14 +278,52 @@ void closeapp()
       }
       system("cls");
       gotoxy(15,10);
-      printf("Press Any Key To Close");
+      printf("press any key to continue.\n");
       getch();
 }
-
+int getdata()
+{
+    int m;
+    system("cls");
+    gotoxy(10,8);
+    printf("give info");
+    gotoxy(10,10);
+    printf("%s", categories[d-1]);
+    gotoxy(10,12);
+    printf("Book ID: ");
+    scanf("%d",&m);
+    if(checkid(m)==0)
+    {
+        gotoxy(10,12);
+        printf("\aid is not valid, try again\a");
+        getch();
+        addbooks();
+    }
+    book.id=m;
+    gotoxy(10,12);
+    printf("Book Name: ");
+    scanf("%s", &book.name);
+    gotoxy(10,14);
+    printf("Author: ");
+    scanf("%s", &book.Author);
+    gotoxy(10,16);
+    printf("Quantity: ");
+    scanf("%d", &book.quantity);
+    gotoxy(10,18);
+    printf("Price: ");
+    scanf("%f", &book.Price);
+    return 1;
+}
+int checkid(int z)
+{
+    while(fread(&book,sizeof(book),1,fp)==1)
+    if(book.id==z)
+    return 0;
+    return 1;
+}
 int main()
 {
     password();
 
     return 0;
 }
-
