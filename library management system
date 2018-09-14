@@ -275,14 +275,11 @@ void deletebooks()
     printf("Enter the Book ID to delete:");
     scanf("%d",&d);
     fp=fopen("addbooks.txt","r+");
-    rewind(fp);
-    while(fread(&book,sizeof(book),1,fp)==1)
+    fseek(fp,0, SEEK_SET);
+    while(fscanf(fp,"\n%d %s %s %d %f\n",&book.id,&book.name,&book.Author,&book.quantity,&book.Price)!=EOF)
     {
         if(book.id==d)
         {
-
-            gotoxy(10,7);
-            printf("The book record is available");
             gotoxy(10,8);
             printf("Book name is %s",book.name);
             gotoxy(10,9);
@@ -292,18 +289,19 @@ void deletebooks()
             if(getch()=='y')
             {
                 ft=fopen("temp.txt","w+");
-                rewind(fp);
-                while(fread(&book,sizeof(book),1,fp)==1)
+                fseek(fp,0, SEEK_SET);
+                while(fscanf(fp,"\n%d %s %s %d %f\n",&book.id,&book.name,&book.Author,&book.quantity,&book.Price)!=EOF)
                 {
                     if(book.id!=d)
                     {
-                        fwrite(&book,sizeof(book),1,ft);
+                          fprintf(fp,"\n%d %s %s %d %f\n",book.id,book.name,book.Author,book.quantity,book.Price);
                     }
                 }
                 fclose(ft);
                 fclose(fp);
                 remove("addbooks.txt");
                 rename("temp.txt", "addbooks.txt");
+                fp=fopen("addbooks.txt", "r+");
                 gotoxy(10,11);
                 printf("the record is successfully deleted. delete more?");
                 gotoxy(10,13);
@@ -328,7 +326,195 @@ void deletebooks()
 }
 void issuebooks()
 {
+int t;
 
+    system("cls");
+    printf("********************************ISSUE SECTION**************************");
+    gotoxy(10,5);
+    printf("1. Issue a Book");
+    gotoxy(10,7);
+    printf("2. View Issued Book");
+    gotoxy(10,9);
+    printf("3. Search Issued Book");
+    gotoxy(10,11);
+    printf("4. Remove Issued Book");
+    gotoxy(10,14);
+    printf("Enter a Choice:");
+    switch(getch())
+    {
+    case '1':
+    {
+        system("cls");
+        int c=0;
+        char another='y';
+        while(another=='y')
+        {
+            system("cls");
+            gotoxy(15,4);
+            printf("***Issue Book section***");
+            gotoxy(10,6);
+            printf("Enter Book ID:");
+            scanf("%d",&t);
+            fp=fopen("addbooks.txt","r");
+            fs=fopen("issuebooks.txt","a+");
+            if(checkid(t)==0)
+            {
+                 gotoxy(10,8);
+                 printf("The book record is available");
+                 gotoxy(10,9);
+                 printf("There are %d unissued books in library ",book.quantity);
+                 gotoxy(10,10);
+                 printf("The name of book is %s",book.name);
+                 gotoxy(10,11);
+                 printf("Enter student name:");
+                 scanf("%s",book.stdname);
+                 gotoxy(10,13);
+                 printf("The BOOK of ID %d is issued",book.id);
+                 fseek(fs,sizeof(book),SEEK_END);
+                 fprintf(fs,"\n%d %s %s %d %f\n",book.id,book.name,book.Author,book.quantity,book.Price);
+                 fclose(fs);
+                 c=1;
+            }
+            if(c==0)
+            {
+            gotoxy(10,11);
+            printf("No record found");
+            }
+            gotoxy(10,15);
+            printf("Issue any more(Y/N):");
+            fflush(stdin);
+            another=getche();
+            fclose(fp);
+        }
+
+        break;
+    }
+    case '2': 
+    {
+        system("cls");
+        int j=4;
+        printf("*******************************Issued book list*******************************\n");
+        gotoxy(2,2);
+        printf("STUDENT NAME    CATEGORY    ID    BOOK NAME    ");
+           fs=fopen("issueboks.txt","r");
+        while(fscanf(fp,"\n%d %s %s %d %f\n",&book.id,&book.name,&book.Author,&book.quantity,&book.Price)!=EOF);
+        {
+
+            gotoxy(2,j);
+            printf("%s",book.stdname);
+            gotoxy(18,j);
+            printf("%s",book.cat);
+            gotoxy(30,j);
+            printf("%d",book.id);
+            gotoxy(36,j);
+            printf("%s",book.name);
+            j++;
+
+        }
+        fclose(fs);
+        gotoxy(1,25);
+    }
+    break;
+    case '3':
+    {
+        system("cls");
+        gotoxy(10,6);
+        printf("Enter Book ID:");
+        int p,c=0;
+        char another='y';
+        while(another=='y')
+        {
+
+            scanf("%d",&p);
+            fs=fopen("issuebook.txt","r");
+            while(fscanf(fp,"\n%d %s %s %d %f\n",&book.id,&book.name,&book.Author,&book.quantity,&book.Price)!=EOF);
+            {
+                if(book.id==p)
+                {
+                    issuebooks();
+                    gotoxy(10,12);
+                    printf("Press any key.......");
+                    getch();
+                    issuebooks();
+                    c=1;
+                }
+
+            }
+            fflush(stdin);
+            fclose(fs);
+            if(c==0)
+            {
+                gotoxy(10,8);
+                printf("No Record Found");
+            }
+            gotoxy(10,13);
+            printf("Try Another Search?(Y/N)");
+            another=getch();
+        }
+    }
+    break;
+    case '4':
+    {
+        system("cls");
+        int b;
+        FILE *fg;
+        char another='y';
+        while(another=='y')
+        {
+            gotoxy(10,5);
+            printf("Enter book id to remove:");
+            scanf("%d",&b);
+            fs=fopen("issuebook.txt","r+");
+            while(fscanf(fp,"\n%d %s %s %d %f\n",&book.id,&book.name,&book.Author,&book.quantity,&book.Price)!=EOF);
+            {
+                if(book.id==b)
+                {
+                    issuebooks();
+                    findbook='t';
+                }
+                if(findbook=='t')
+                {
+                    gotoxy(10,12);
+                    printf("Do You Want to Remove it?(Y/N)");
+                    if(getch()=='y')
+                    {
+                        fg=fopen("record.txt","w+");
+                        while(fscanf(fp,"\n%d %s %s %d %f\n",&book.id,&book.name,&book.Author,&book.quantity,&book.Price)!=EOF);
+                        {
+                            if(book.id!=b)
+                            {
+                            fseek(fs,0,SEEK_CUR);
+                            while(fscanf(fp,"\n%d %s %s %d %f\n",&book.id,&book.name,&book.Author,&book.quantity,&book.Price)!=EOF);
+                            }
+                        }
+                        fclose(fs);
+                        fclose(fg);
+                        remove("issuebook.txt");
+                        rename("record.txt","issuebook.txt");
+                        gotoxy(10,14);
+                        printf("The issued book is removed from list");
+
+                       }
+
+                }
+                if(findbook!='t')
+                {
+                    gotoxy(10,15);
+                    printf("No Record Found");
+                }
+            }
+            gotoxy(10,16);
+            printf("Delete any more?(Y/N)");
+            another=getch();
+        }
+    }
+    default:
+    gotoxy(10,18);
+    printf("\aWrong Entry!!");
+    getch();
+    issuebooks();
+    break;
+      }
 }
 void viewbooks()
 {
@@ -376,24 +562,68 @@ void viewbooks()
 }
 void ebrecords()
 {
-
+system("cls");
+    int c=0;
+    int d,e;
+    gotoxy(20,4);
+    printf("****Edit Books Section****");
+    char another='y';
+    while(another=='y')
+    {
+        system("cls");
+        gotoxy(15,6);
+        printf("Enter Book Id to be edited:");
+        scanf("%d",&d);
+        fp=fopen("addbooks.txt","r+");
+         while(fscanf(fp,"\n%d %s %s %d %f\n",&book.id,&book.name,&book.Author,&book.quantity,&book.Price)!=EOF);
+        {
+            if(checkid(d)==0)
+            {
+                gotoxy(15,7);
+                printf("The book is availble");
+                gotoxy(15,8);
+                printf("The Book ID:%d",book.id);
+                gotoxy(15,9);
+                printf("Enter new name:");scanf("%s",book.name);
+                gotoxy(15,10);
+                printf("Enter new Author:");scanf("%s",book.Author);
+                gotoxy(15,11);
+                printf("Enter new quantity:");scanf("%d",&book.quantity);
+                gotoxy(15,12);
+                printf("Enter new price:");scanf("%f",&book.Price);
+                gotoxy(15,13);
+                printf("The record is modified");
+                 fprintf(fp,"\n%d %s %s %d %f\n",book.id,book.name,book.Author,book.quantity,book.Price);
+                fclose(fp);
+                c=1;
+            }
+            if(c==0)
+            {
+                gotoxy(15,9);
+                printf("No record found");
+            }
+        }
+        gotoxy(15,16);
+        printf("Modify another Record?(Y/N)");
+        fflush(stdin);
+        another=getch() ;
+    }
 }
+
 void closeapp()
 {
     system("cls");
-    gotoxy(15,8);
+    gotoxy(15,4);
     printf("Thanks For Using This Application.");
-    gotoxy(15,15);
+    gotoxy(10,10);
     printf("Loading");
     for(j=0; j<=20; j++)
     {
         delay(60);
         printf(". ");
     }
-    system("cls");
-    gotoxy(15,10);
-    printf("press any key to continue.\n");
-    getch();
+    gotoxy(15,15);
+    exit(0);
 }
 int getdata()
 {
@@ -429,8 +659,9 @@ int getdata()
 }
 int checkid(int z)
 {
-    while(fscanf(fp, "%d", &book.id)!=EOF)
-    if(intcmp(book.id,z)==0)
+    if(fseek(fp, sizeof(book), SEEK_END)==0)
+    while(fscanf(fp,"\n%d %s %s %d %f\n",&book.id,&book.name,&book.Author,&book.quantity,&book.Price)!=EOF);
+    if(book.id==z)
       return 0;
 }
 int main()
