@@ -1,0 +1,312 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
+int PY = 2018;
+int ylimit = 13;
+struct user
+{
+    int birthyear;
+    char name[20];
+    char location[50];
+    int count;
+    struct user *friend1;
+    struct user *next;
+
+};
+typedef struct user node;
+
+void all_user(node *head)
+{
+    node *temp;
+    temp = head;
+    while(temp->next!=NULL)
+    {
+        printf(" %s - %s - %d \n", temp->name, temp->location, temp->birthyear);
+        temp=temp->next;
+     }
+}
+
+node *add_user(node *head)
+{
+    node *temp, *temp2;
+    temp = head;
+    temp2 = head;
+    char ans;
+    do
+    {
+        if(temp == NULL)
+        {
+
+                temp = (node*)malloc(sizeof(node));
+                fflush(stdout);
+                printf("birthyear of user: ");
+                fflush(stdin);
+                scanf("%d", temp->birthyear);
+
+                if( PY- temp->birthyear >ylimit)
+            {
+                printf("name of user: ");
+                gets(temp->name);
+                printf("location of user: ");
+                gets(temp->location);
+                temp->next = NULL;
+                printf("added successfully! add more?(Y/N)");
+                       getchar();
+                ans = toupper(getchar());
+            }
+            else
+            {
+                printf("sorry! it's under age\n");
+                //printf("want to try again?(Y/N)");
+                //getchar();
+                //if(toupper(getchar()) == 'Y')
+                   //add_user(head);
+            }
+        }
+        else
+        {
+                printf("birth year of user: ");
+                fflush(stdin);
+                scanf("%d", temp->birthyear);
+
+                if(PY-temp->birthyear>ylimit)
+            {
+                node *temp1;
+                temp1= (node*)malloc(sizeof(node));
+                printf("name of user: ");
+                gets(temp1->name);
+                printf("location of user: ");
+                gets(temp1->location);
+                temp1->next = NULL;
+                while(temp2->next!= NULL)
+                {
+                    if(temp2->name == temp1-> name && temp2->birthyear == temp1->birthyear)
+                    {
+                        printf("sorry! it's already exists, he is %d no user!!", temp1->count);
+                        return head;
+                    }
+                }
+                  temp->next = temp1;
+                        temp = temp1;
+                  printf("added successfully! add more?(Y/N)");
+                    getchar();
+                    ans = toupper(getchar());
+            }
+            else printf("sorry! it's under age");
+        }
+
+    }
+    while(ans == 'Y');
+    return head;
+}
+node *remove_user(node *head, char na[], int bi)
+{
+    node *temp,*temp1;
+    temp = head;
+    while(temp->name!= na && temp->birthyear!= bi)
+    {
+        temp = temp -> next ;
+    }
+    if(temp == head)
+    {
+        temp1= temp;
+        head = head -> next;
+        temp = head;
+        free(temp1);
+    }
+    else
+        {
+            node *temp1;
+            temp1= temp-> next;
+            temp->next = temp->next->next;
+            free(temp1);
+        }
+return head;
+}
+int total_friend1(node *head)
+{
+    int w = 1;
+    node *temp;
+    temp = head;
+    while(temp->friend1!= NULL)
+    {
+        temp->count = w;
+        w++;
+        temp = temp -> next;
+    }
+   return w;
+}
+node *most_friend1(node *head)
+{
+   node *temp1;
+   temp1 = head;
+   int max;
+   int t;
+
+   while(temp1 -> next!= NULL)
+   {
+       t = total_friend1(temp1);
+       max = t;
+       if(t > max)
+       {
+           max = t;
+       }
+       temp1 = temp1 -> next;
+   }
+   temp1 = head;
+   while(temp1 -> next!= NULL)
+   {
+       while(temp1 -> friend1!= NULL)
+       {
+           if(temp1->count == max)
+           {
+               return temp1;
+           }
+           temp1 = temp1 -> friend1;
+       }
+       temp1 = temp1 -> next;
+   }
+
+}
+node *oldest_friend1(node *head)
+{
+   node *temp1, *temp2;
+   temp1 = head;
+   int max = 0;
+
+   while(temp1 -> next!= NULL)
+   {
+       while(temp1 -> friend1!= NULL)
+       {
+           if(temp1-> birthyear > max)
+           {
+               max = temp1 -> birthyear;
+           }
+           temp1 = temp1 -> friend1;
+       }
+       temp1 = temp1 -> next;
+   }
+   temp1 = head;
+   temp2 = head;
+   while(temp1 -> next!= NULL)
+   {
+       while(temp2 -> friend1!= NULL)
+       {
+           if(temp2-> birthyear == max)
+           {
+               return temp1;
+           }
+           temp2 = temp2 -> friend1;
+       }
+       temp1 = temp1 -> next;
+   }
+
+}
+void common_friend1(node *temp1, node *temp2)
+{
+
+}
+void add_friend(node *temp1, node *temp2)
+{
+   node *temp3;
+   node *temp4;
+   temp3 = (node*)malloc(sizeof(node));
+   temp4 = (node*)malloc(sizeof(node));
+   temp3 -> friend1 = NULL;
+   strcpy(temp3 -> name,temp1 -> name);
+   temp3 -> birthyear = temp1 -> birthyear;
+   strcpy(temp3 -> location,temp1 -> location);
+   temp1 -> friend1 = temp3;
+   temp3 = temp3 -> friend1;
+   temp4 -> friend1 = NULL;
+   strcpy(temp4 -> name,temp2 -> name);
+   temp4 -> birthyear = temp2 -> birthyear;
+   strcpy(temp4 -> location,temp2 -> location);
+   temp2 -> friend1 = temp4;
+   temp4 = temp4 -> friend1;
+}
+int main()
+{
+  int choice;
+    node *start;
+    start = (node*)malloc(sizeof(node));
+    start->next = NULL;
+    printf("what you want to do?\n1. see total user\n2. add new user\n3. remove an user\n4. see total number of friend of an user\n5. see who has most friend1\n6. see who has oldest friend\n7. find who has common friend1\n8. add new friend1\ngive input : ");
+    scanf("%d", &choice);
+    switch(choice)
+    {
+        case 1 : {
+                     all_user(start);
+                     break;
+                 }
+        case 2 : {
+                     start = add_user(start);
+                     break;
+                 }
+        case 3 : {
+                   char delna[10];
+                   int delbi;
+                   printf("give the name and birth year of user");
+                   printf("\ngive name first: ");
+                   gets(delna);
+                   printf("\ngive birth year: ");
+                   scanf("%d", &delbi);
+                   start = remove_user(start, delna, delbi);
+                   break;
+                   }
+        case 4 : {
+                     char s[10];
+                     int r;
+                     printf("give the name of user? : ");
+                     gets(s);
+                     node *search;
+                     search = start;
+                     while(search->name!= s)
+                     {
+                         search = search->next;
+                     }
+                    r = total_friend1(search);
+                    printf("total number of friend1 of this user: %d", r);
+                    break;
+                 }
+         case 5 : {
+                             node *re;
+                             re = most_friend1(start);
+                             printf("%s has most friend", re ->name);
+                             break;
+                  }
+         case 6 : {
+                             node *ra;
+                             ra = oldest_friend1(start);
+                             printf("%s has oldest friend", ra -> name);
+                             break;
+                  }
+         case 7 : {
+                             //common_friend1();
+                             break;
+                  }
+         case 8 : {
+                    char a[20], b[20];
+                    node *temp, *temp1;
+                    temp = temp1 = start;
+                    printf("give their name: ");
+                    gets(a);
+                    gets(b);
+                    while(temp->next!=NULL && temp1->next!=NULL)
+                        {
+                            if(temp->name!=a)
+                                temp=temp->next;
+                            if(temp1->name!=b)
+                                temp1=temp1->next;
+                        }
+                    add_friend(temp,temp1);
+                    break;
+                  }
+        default : {
+                    printf("\bwrong pressing! try again!");
+                    break;
+                  }
+    }
+  return 0;
+}
