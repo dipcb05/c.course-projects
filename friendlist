@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<ctype.h>
-int PY = 2018;
+int PY = 2019;
 int ylimit = 13;
 struct user
 {
@@ -12,6 +12,7 @@ struct user
     int count;
     struct user *friend1;
     struct user *next;
+    struct user *down;
 
 };
 typedef struct user node;
@@ -20,16 +21,23 @@ void all_user(node *head)
 {
     node *temp;
     temp = head;
-    while(temp->next!=NULL)
+    if(temp = NULL)
+    {
+        printf("no user added");
+    }
+   else
+   {
+      while(temp->next!=NULL)
     {
         printf(" %s - %s - %d \n", temp->name, temp->location, temp->birthyear);
         temp=temp->next;
      }
+   }
 }
-
 node *add_user(node *head)
 {
     node *temp, *temp2;
+    head = (node*)malloc(sizeof(node));
     temp = head;
     temp2 = head;
     char ans;
@@ -42,42 +50,39 @@ node *add_user(node *head)
                 fflush(stdout);
                 printf("birthyear of user: ");
                 fflush(stdin);
-                scanf("%d", temp->birthyear);
+                scanf("%d", &temp->birthyear);
+                //printf("%d", temp->birthyear);
+                printf("your age : %d\n", PY - temp->birthyear);
 
-                if( PY- temp->birthyear >ylimit)
+                if( (PY - temp->birthyear) > ylimit)
             {
                 printf("name of user: ");
                 gets(temp->name);
                 printf("location of user: ");
                 gets(temp->location);
                 temp->next = NULL;
-                printf("added successfully! add more?(Y/N)");
-                       getchar();
-                ans = toupper(getchar());
             }
             else
             {
                 printf("sorry! it's under age\n");
-                //printf("want to try again?(Y/N)");
-                //getchar();
-                //if(toupper(getchar()) == 'Y')
-                   //add_user(head);
+
             }
         }
         else
         {
                 printf("birth year of user: ");
                 fflush(stdin);
-                scanf("%d", temp->birthyear);
+                scanf("%d", &temp->birthyear);
+                printf("your age : %d\n", PY - temp->birthyear);
 
                 if(PY-temp->birthyear>ylimit)
             {
                 node *temp1;
-                temp1= (node*)malloc(sizeof(node));
+                temp1 = (node*)malloc(sizeof(node));
                 printf("name of user: ");
-                gets(temp1->name);
+                scanf("%s", &temp1->name);
                 printf("location of user: ");
-                gets(temp1->location);
+                scanf("%s", &temp1->location);
                 temp1->next = NULL;
                 while(temp2->next!= NULL)
                 {
@@ -89,20 +94,20 @@ node *add_user(node *head)
                 }
                   temp->next = temp1;
                         temp = temp1;
-                  printf("added successfully! add more?(Y/N)");
-                    getchar();
-                    ans = toupper(getchar());
+                         printf("added successfully! add more?(Y/N)");
+                         getchar();
+                         ans = toupper(getchar());
+
             }
             else printf("sorry! it's under age");
         }
-
     }
     while(ans == 'Y');
     return head;
 }
 node *remove_user(node *head, char na[], int bi)
 {
-    node *temp,*temp1;
+    node *temp,*temp1, *temp2;
     temp = head;
     while(temp->name!= na && temp->birthyear!= bi)
     {
@@ -118,10 +123,38 @@ node *remove_user(node *head, char na[], int bi)
     else
         {
             node *temp1;
-            temp1= temp-> next;
+            temp1 = temp-> next;
             temp->next = temp->next->next;
             free(temp1);
         }
+        temp = head;
+        temp1 = head;
+        while(temp -> next != NULL)
+        {
+            while(temp1 -> friend1 != NULL)
+            {
+                 while(temp->name!= na && temp->birthyear!= bi)
+            {
+                 temp1 = temp1 -> next ;
+            }
+            }
+            if(temp1 == temp)
+            {
+                temp2 = temp1;
+                temp1 = temp1 -> next;
+                temp = temp1;
+                free(temp2);
+            }
+    else
+        {
+            node *temp3;
+            temp3 = temp1-> next;
+            temp1->next = temp1->next->next;
+            free(temp3);
+        }
+            temp = temp -> next;
+        }
+
 return head;
 }
 int total_friend1(node *head)
@@ -203,9 +236,26 @@ node *oldest_friend1(node *head)
    }
 
 }
-void common_friend1(node *temp1, node *temp2)
-{
-
+void common_friend(node *temp1, node *temp2)
+{ 
+  node *temp3;
+  node *temp4;
+  temp3 = temp1;
+  temp4 = temp2;
+  int i = 0;
+  char common[20];
+  while(temp3->friend1!=NULL && temp4->friend1!=NULL)
+  {
+      if(temp3->name == temp4-> name);
+      common[i++] = temp3->name;
+      temp3 = temp3->friend1;
+      temp4 = temp4->friend1;
+  }
+  printf("common friend between %s and %s are :", temp3->name, temp4->name);
+  for(i = 0 ; i < sizeof(common) ; i++)
+  {
+      printf("%s", common[i]);
+  }
 }
 void add_friend(node *temp1, node *temp2)
 {
@@ -232,7 +282,7 @@ int main()
     node *start;
     start = (node*)malloc(sizeof(node));
     start->next = NULL;
-    printf("what you want to do?\n1. see total user\n2. add new user\n3. remove an user\n4. see total number of friend of an user\n5. see who has most friend1\n6. see who has oldest friend\n7. find who has common friend1\n8. add new friend1\ngive input : ");
+    printf("what you want to do?\n1. see total user\n2. add new user\n3. remove an user\n4. see total number of friend of an user\n5. see who has most friend\n6. see who has oldest friend\n7. find who has common friend\n8. add new friend\ngive choice : ");
     scanf("%d", &choice);
     switch(choice)
     {
@@ -283,7 +333,21 @@ int main()
                              break;
                   }
          case 7 : {
-                             //common_friend1();
+                             char a[20], b[20], c[20];
+                             node *temp, *temp1;
+                             temp = temp1 = start;
+                             printf("give their name: ");
+                             gets(a);
+                             gets(b);
+                    while(temp->next!=NULL && temp1->next!=NULL)
+                        {
+                            if(temp->name!=a)
+                                temp=temp->next;
+                            if(temp1->name!=b)
+                                temp1=temp1->next;
+                        }
+                    common_friend(temp,temp1);
+
                              break;
                   }
          case 8 : {
